@@ -1,8 +1,14 @@
 #ifndef UI_H
 #define UI_H
 
-int menuGiaoDien(const char *options[], int optionCount);
+#include "restaurant.h"
 
 void runUI();
 
-#endif // UI_H
+int menuGiaoDien(const char *options[], int optionCount);
+
+void xoaMonAn(Table *tableList);
+
+void inHoaDon(Table *tableList);
+
+#endif

@@ -1,8 +1,9 @@
 #include "ui.h"
 #include "restaurant.h"
 #include "utils.h"
-#include <conio.h> // Nếu dùng Windows
+#include <conio.h> // Neu dung Windows
 #include <stdio.h>
+#include <string.h>
 
 int menuGiaoDien(const char *options[], int optionCount) {
   int selection = 0;
@@ -35,6 +36,55 @@ int menuGiaoDien(const char *options[], int optionCount) {
   return selection;
 }
 
+void xoaMonAn(struct Table *tableList) {
+  int tableNum;
+  printf("Nhap so ban can sua: ");
+  scanf("%d", &tableNum);
+  Table *t = search_Table(tableList, tableNum);
+  if (!t || t->status == 0) {
+    printf("Khong tim thay ban da dat.\n");
+    return;
+  }
+  printf("Danh sach mon hien tai:\n");
+  for (int i = 0; i < MAX_ORDER && strlen(t->orderDetails[i]) > 0; i++) {
+    printf("%d. %s\n", i + 1, t->orderDetails[i]);
+  }
+  int idx;
+  printf("Nhap so thu tu mon muon xoa: ");
+  scanf("%d", &idx);
+  idx--;
+  if (idx < 0 || idx >= MAX_ORDER || strlen(t->orderDetails[idx]) == 0) {
+    printf("Mon khong hop le.\n");
+    return;
+  }
+  for (int i = idx; i < MAX_ORDER - 1; i++) {
+    strcpy(t->orderDetails[i], t->orderDetails[i + 1]);
+    if (strlen(t->orderDetails[i + 1]) == 0)
+      break;
+  }
+  strcpy(t->orderDetails[MAX_ORDER - 1], "");
+  printf("Da xoa mon an.\n");
+}
+
+void inHoaDon(Table *tableList) {
+  int tableNum;
+  printf("Nhap so ban can in hoa don: ");
+  scanf("%d", &tableNum);
+  Table *t = search_Table(tableList, tableNum);
+  if (!t || t->status == 0) {
+    printf("Khong tim thay ban da dat.\n");
+    return;
+  }
+  printf("\n=== HOA DON ===\n");
+  printf("Ban so: %d\n", t->tableNumber);
+  printf("Khach hang: %s\n", t->customerName);
+  printf("Danh sach mon:\n");
+  for (int i = 0; i < MAX_ORDER && strlen(t->orderDetails[i]) > 0; i++) {
+    printf("- %s\n", t->orderDetails[i]);
+  }
+  printf("===============\n\n");
+}
+
 void runUI() {
   Queue q;
   List scheduledList = {.count = 0};
@@ -52,7 +102,9 @@ void runUI() {
                         "6. Hien thi danh sach dang dung bua",
                         "7. Dat ban",
                         "8. Hien thi cac ban",
-                        "9. Thoat"};
+                        "9. Xoa mon an",
+                        "10. In hoa don",
+                        "11. Thoat"};
   int menuCount = sizeof(menu) / sizeof(menu[0]);
 
   while (1) {
@@ -89,6 +141,12 @@ void runUI() {
       show_Table(tableList);
       break;
     case 8:
+      xoaMonAn(tableList);
+      break;
+    case 9:
+      inHoaDon(tableList);
+      break;
+    case 10:
       free_TableList(&tableList);
       return;
     }
