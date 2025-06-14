@@ -5,6 +5,8 @@
 #include <stdio.h>
 #include <string.h>
 
+#define GIA_MOI_MON 50000
+
 int menuGiaoDien(const char *options[], int optionCount) {
   int selection = 0;
   char key;
@@ -36,7 +38,7 @@ int menuGiaoDien(const char *options[], int optionCount) {
   return selection;
 }
 
-void xoaMonAn(struct Table *tableList) {
+void xoaMonAn(Table *tableList) {
   int tableNum;
   printf("Nhap so ban can sua: ");
   scanf("%d", &tableNum);
@@ -79,9 +81,12 @@ void inHoaDon(Table *tableList) {
   printf("Ban so: %d\n", t->tableNumber);
   printf("Khach hang: %s\n", t->customerName);
   printf("Danh sach mon:\n");
+  int tong = 0;
   for (int i = 0; i < MAX_ORDER && strlen(t->orderDetails[i]) > 0; i++) {
     printf("- %s\n", t->orderDetails[i]);
+    tong += GIA_MOI_MON;
   }
+  printf("Tong tien: %d VND\n", tong);
   printf("===============\n\n");
 }
 
